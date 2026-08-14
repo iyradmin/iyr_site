@@ -64,7 +64,7 @@ function shell({ title, desc, body, depth, canonical, schema }) {
   <link rel="stylesheet" href="${up}style.css">
   <script type="application/ld+json">${JSON.stringify(schema)}</script>
 </head>
-<body>
+<body data-base="${up}">
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header" id="header">
     <div class="container nav">

@@ -648,6 +648,14 @@ const DATA = {
 /* --------------------------------------------------------------------------
    Render helpers
    -------------------------------------------------------------------------- */
+/** Path prefix for internal links.
+ *  Pages generated into /services/ and /work/ carry <body data-base="../">.
+ *  Root pages have no attribute, so BASE is ''. Without this the runtime
+ *  header/footer overwrite the baked chrome with links that 404 one level in.
+ *  Read once, before any render. */
+const BASE = (typeof document !== 'undefined' && document.body && document.body.dataset
+  ? document.body.dataset.base : '') || '';
+
 /** Nav links whose target actually has something to show. */
 const navLinks = () => DATA.nav.filter((n) => !n.when || n.when(DATA));
 
@@ -713,13 +721,13 @@ const quoteCard = (t) => `
 function renderChrome() {
   mount('header', `
     <div class="container nav">
-      <a class="brand" href="index.html">In Your <span>Reach</span></a>
+      <a class="brand" href="${BASE}index.html">In Your <span>Reach</span></a>
       <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <nav class="nav-links">
-        ${navLinks().map((n) => `<a href="${n.href}">${n.label}</a>`).join('')}
-        <a class="btn btn-primary" href="index.html#contact">${CONFIG.cta} ${icon("arrowR")}</a>
+        ${navLinks().map((n) => `<a href="${BASE}${n.href}">${n.label}</a>`).join('')}
+        <a class="btn btn-primary" href="${BASE}index.html#contact">${CONFIG.cta} ${icon("arrowR")}</a>
       </nav>
     </div>`);
 
@@ -730,7 +738,7 @@ function renderChrome() {
     <div class="container">
       <div class="footer-grid">
         <div>
-          <a class="brand" href="index.html">In Your <span>Reach</span></a>
+          <a class="brand" href="${BASE}index.html">In Your <span>Reach</span></a>
           <p class="muted" style="margin-top:1rem;max-width:32ch;font-size:.9rem">
             ${CONFIG.tagline}. Strategy, creative, media and measurement under one roof —<br>with the reasoning shown, always.
           </p>
@@ -739,11 +747,11 @@ function renderChrome() {
         <div>
           <h4>Services</h4>
           <ul>${Object.entries(DATA.services).map(([slug, s]) =>
-            `<li><a href="services/${slug}.html">${s.title}</a></li>`).join('')}</ul>
+            `<li><a href="${BASE}services/${slug}.html">${s.title}</a></li>`).join('')}</ul>
         </div>
         <div>
           <h4>Company</h4>
-          <ul>${navLinks().map((n) => `<li><a href="${n.href}">${n.label}</a></li>`).join('')}</ul>
+          <ul>${navLinks().map((n) => `<li><a href="${BASE}${n.href}">${n.label}</a></li>`).join('')}</ul>
         </div>
         <div>
           <h4>Get in touch</h4>
@@ -1199,7 +1207,7 @@ function serviceDetail(s) {
         <div class="cta-band reveal">
           <h2>Ready to Get Started?</h2>
           <p class="lead">Let’s discuss how ${s.title.toLowerCase()} can move your business forward.</p>
-          <a class="btn btn-primary" href="index.html#contact">${CONFIG.cta} ${icon("arrowR")}</a>
+          <a class="btn btn-primary" href="${BASE}index.html#contact">${CONFIG.cta} ${icon("arrowR")}</a>
         </div>
       </div>
     </section>`;

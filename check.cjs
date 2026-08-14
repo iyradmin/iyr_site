@@ -56,7 +56,7 @@ const El = () => ({
   querySelector() { return El(); }, querySelectorAll() { return []; },
 });
 
-function boot(search) {
+function boot(search, base = '') {
   delete require.cache[require.resolve('./site.js')];
   const nodes = {};
   global.document = {
@@ -64,7 +64,7 @@ function boot(search) {
     getElementById: (i) => (nodes[i] ||= El()),
     querySelector: (s) => (/form|status|year|nav/.test(s) ? El() : null),
     querySelectorAll: (s) => (s.includes('reveal') || s.includes('data-cta') ? [El(), El()] : []),
-    body: { classList: { add() {}, remove() {}, toggle() { return true; } } },
+    body: { dataset: { base }, classList: { add() {}, remove() {}, toggle() { return true; } } },
   };
   global.window = {}; global.location = { search };
   global.IntersectionObserver = class { observe() {} unobserve() {} };
@@ -128,6 +128,52 @@ for (const s of services) {
 for (const c of cases) {
   ok(fs.existsSync(`work/${c}.html`), `work/${c}.html missing — run: node build.cjs`);
 }
+/* Every relative link on every page must resolve to a real file, from that
+   page's own directory. This is what caught the footer 404s: build.cjs baked
+   correct ../ paths, then site.js overwrote the chrome with root-relative
+   ones that only worked from the root. */
+head('link resolution');
+const allPages = [...PAGES, ...services.map((s) => `services/${s}.html`),
+                            ...cases.map((c) => `work/${c}.html`)];
+for (const page of allPages) {
+  if (!fs.existsSync(page)) continue;
+  const dir = path.dirname(page);
+  const html = fs.readFileSync(page, 'utf8');
+  for (const m of html.matchAll(/href="([^"]+)"/g)) {
+    const raw = m[1];
+    if (/^(https?:|mailto:|tel:|#|data:)/.test(raw)) continue;
+    const file = raw.split('#')[0];
+    if (!file) continue;
+    ok(fs.existsSync(path.join(dir, file)),
+       `${page}: link "${raw}" resolves to ${path.join(dir, file)} which does not exist`);
+  }
+}
+// The baked pages must declare their depth...
+for (const s of services.slice(0, 2)) {
+  const h = fs.readFileSync(`services/${s}.html`, 'utf8');
+  ok(/<body data-base="\.\.\/">/.test(h),
+     `services/${s}.html: missing data-base — site.js will rewrite links to 404`);
+}
+
+// ...and site.js must ACT on it. The baked footer is correct on disk; the bug
+// is that the runtime chrome replaces it. So render the chrome at depth and
+// resolve those links, not the ones in the file.
+{
+  const deep = boot('', '../');
+  const chrome = (deep.header?.innerHTML || '') + (deep.footer?.innerHTML || '');
+  let checked = 0;
+  for (const m of chrome.matchAll(/href="([^"]+)"/g)) {
+    const raw = m[1];
+    if (/^(https?:|mailto:|tel:|#|data:)/.test(raw)) continue;
+    const file = raw.split('#')[0];
+    if (!file) continue;
+    checked++;
+    ok(fs.existsSync(path.join('services', file)),
+       `runtime chrome at depth 1: "${raw}" -> services/${file} does not exist (BASE not applied?)`);
+  }
+  ok(checked > 5, 'runtime chrome produced too few links to verify');
+}
+
 ok(fs.existsSync('sitemap.xml'), 'sitemap.xml missing');
 ok(fs.existsSync('robots.txt'), 'robots.txt missing');
 if (fs.existsSync('sitemap.xml')) {
