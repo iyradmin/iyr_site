@@ -840,10 +840,12 @@ function renderHome() {
             <p class="layer-lead">${p.headline}</p>
             <p class="layer-body">${p.body}</p>
             <div class="layer-svc">${p.services.map((x) => `<span>${x}</span>`).join('')}</div>
-            <h4 class="layer-sub">What breaks without it</h4>
-            <dl class="solves">
-              ${p.solves.map((x) => `<div><dt>${x.n}</dt><dd>${x.t}</dd></div>`).join('')}
-            </dl>
+            <details class="layer-solves" open>
+              <summary><span class="layer-sub">What breaks without it</span></summary>
+              <dl class="solves">
+                ${p.solves.map((x) => `<div><dt>${x.n}</dt><dd>${x.t}</dd></div>`).join('')}
+              </dl>
+            </details>
           </article>`).join('')}
       </div>
     </div>`);
@@ -1337,6 +1339,14 @@ function observeReveals() {
   els.forEach((e) => io.observe(e));
 }
 
+/* Collapse the named-problem lists on narrow screens. They are the single
+   biggest contributor to mobile scroll depth; open by default so a
+   no-JS visitor still gets everything. */
+function collapseOnMobile() {
+  if (!window.matchMedia || !window.matchMedia('(max-width: 980px)').matches) return;
+  $$('.layer-solves[open]').forEach((d) => d.removeAttribute('open'));
+}
+
 /* Header condense + reading progress. One rAF-throttled scroll listener for
    both; two listeners doing scroll maths is two chances to jank. */
 function wireScroll() {
@@ -1470,6 +1480,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'Thanks — relevant examples will be with you within one business day.');
   observeReveals();
   wireScroll();
+  collapseOnMobile();
 });
 
 /* Node-only: lets build.cjs pre-render static pages. Inert in the browser. */
