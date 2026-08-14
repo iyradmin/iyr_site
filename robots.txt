@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /_private/
+Disallow: /_refs/
+Disallow: /_logos/
+
+Sitemap: https://www.inyourreach.example/sitemap.xml

@@ -75,31 +75,56 @@ function boot(search) {
 }
 
 const home = boot('');
-for (const id of ['header', 'footer', 'hero', 'pillars', 'fit', 'services', 'process',
-                  'why-us', 'portfolio', 'stack', 'sectors', 'testimonials', 'contact']) {
+// Always-on sections. testimonials/clients/work are intentionally empty until
+// real, attributable content exists — mount() hides them rather than leaving a gap.
+for (const id of ['header', 'footer', 'hero', 'pillars', 'fit', 'services',
+                  'process', 'why-us', 'portfolio', 'stack', 'sectors', 'contact']) {
   ok((home[id]?.innerHTML || '').length > 50, `home section "${id}" rendered empty`);
 }
+// The work section must always offer a route to content, real or on request.
+const workHtml = home.portfolio?.innerHTML || '';
+ok(/class="work reveal"|id="work-form"/.test(workHtml),
+   'work section shows neither real work nor a request form');
 
 // Routes are taken from what the page actually links to, not from parsing the
 // source — that way a link the user can click is always a link that resolves.
 const services = [...(home.services?.innerHTML || '')
-  .matchAll(/href="detail\.html\?service=([^"]+)"/g)].map((m) => m[1]);
+  .matchAll(/href="services\/([a-z0-9-]+)\.html"/g)].map((m) => m[1]);
 const cases = [...(home.portfolio?.innerHTML || '')
-  .matchAll(/href="detail\.html\?case=([^"]+)"/g)].map((m) => m[1]);
+  .matchAll(/href="work\/([a-z0-9-]+)\.html"/g)].map((m) => m[1]);
 ok(services.length === 12, `expected 12 service links on the homepage, found ${services.length}`);
-ok(cases.length >= 3, `expected at least 3 case-study links, found ${cases.length}`);
-for (const s of services) {
+
+// The query-string router must still work — old shared links depend on it.
+for (const s of services.slice(0, 3)) {
   const n = boot(`?service=${s}`);
-  ok((n.detail?.innerHTML || '').length > 1000, `service route "${s}" rendered empty`);
-}
-for (const c of cases) {
-  const n = boot(`?case=${c}`);
-  const h = n.detail?.innerHTML || '';
-  ok(h.length > 1000, `case route "${c}" rendered empty`);
-  ok(h.includes('gate-form'), `case route "${c}" missing the lead-capture gate`);
+  ok((n.detail?.innerHTML || '').length > 1000, `detail.html fallback for "${s}" is broken`);
 }
 const nf = boot('?service=does-not-exist');
 ok((nf.detail?.innerHTML || '').includes('Page Not Found'), 'unknown slug should show Not Found');
+
+/* ---- 4b. generated static pages ---------------------------------------- */
+head('generated pages (run node build.cjs after editing DATA)');
+for (const s of services) {
+  const f = `services/${s}.html`;
+  if (!fs.existsSync(f)) { ok(false, `${f} missing — run: node build.cjs`); continue; }
+  const h = fs.readFileSync(f, 'utf8');
+  const words = h.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
+  ok(words > 200, `${f}: only ${words} words in source — crawlers see almost nothing`);
+  ok(/<h1>/.test(h), `${f}: no <h1>`);
+  ok(/rel="canonical"/.test(h), `${f}: no canonical URL`);
+  ok(/application\/ld\+json/.test(h), `${f}: no structured data`);
+  ok(!/href="detail\.html\?/.test(h), `${f}: still links to the query-string router`);
+}
+for (const c of cases) {
+  ok(fs.existsSync(`work/${c}.html`), `work/${c}.html missing — run: node build.cjs`);
+}
+ok(fs.existsSync('sitemap.xml'), 'sitemap.xml missing');
+ok(fs.existsSync('robots.txt'), 'robots.txt missing');
+if (fs.existsSync('sitemap.xml')) {
+  const sm = fs.readFileSync('sitemap.xml', 'utf8');
+  ok((sm.match(/<loc>/g) || []).length >= services.length,
+     'sitemap is missing service URLs — re-run node build.cjs');
+}
 
 /* ---- 5. the in-browser self-check --------------------------------------- */
 head('self-check');

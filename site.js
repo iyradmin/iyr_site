@@ -130,11 +130,10 @@ const DATA = {
     title: 'Your market.',
     titleAccent: 'Within reach.',
     lead: 'We extend how far your brand reaches — and make the growth that follows something you can plan for, not hope for. No jargon, no black-box reporting, no waiting a quarter to find out it didn’t work.',
-    stats: [
-      { num: '500+', lbl: 'Projects Delivered' },
-      { num: '5X', lbl: 'Average ROI' },
-      { num: '98%', lbl: 'Client Retention' },
-    ],
+    /* Numbers removed — 500+/5X/98% were the reference site's, not ours.
+       Put real ones here; "11 clients" beats "500+" when 11 is true.
+       An empty array hides the row entirely. */
+    stats: [],
   },
 
   /* Capability pillars — the self-select tablist, but on a CAPABILITY axis
@@ -610,92 +609,28 @@ const DATA = {
     { icon: 'headset', title: 'Responsive Support', text: 'A named point of contact and campaign monitoring that catches problems before they cost you.' },
   ],
 
-  stats: [
-    { num: '500+', lbl: 'Projects Delivered' },
-    { num: '98%', lbl: 'Client Retention' },
-    { num: '5X', lbl: 'Average ROI' },
-    { num: '50+', lbl: 'Industries Served' },
-    { num: '24/7', lbl: 'Campaign Monitoring' },
-  ],
+  /* Real numbers only. Empty hides the whole band. */
+  stats: [],
 
-  // Portfolio. `case` links a card to a full case study below.
-  work: [
-    { title: 'Aurora Skincare', niche: 'D2C Beauty', tags: ['Website', 'Performance'], case: 'ecommerce-revolution' },
-    { title: 'Pulse Fitness', niche: 'Health & Wellness', tags: ['Social Media', 'Content'], case: 'social-media-growth' },
-    { title: 'Meridian Legal', niche: 'Professional Services', tags: ['Performance', 'PPC'], case: 'ppc-performance-boost' },
-    { title: 'Loom & Thread', niche: 'Handloom & Textiles', tags: ['E-commerce', 'Marketplace'] },
-    { title: 'Terra Foods', niche: 'FMCG', tags: ['Strategy', 'Performance'] },
-    { title: 'Nimbus Realty', niche: 'Real Estate', tags: ['Website', 'Lead Gen'] },
-    { title: 'Vault & Co.', niche: 'Jewellery', tags: ['Social Media', 'Content'] },
-    { title: 'Stride Footwear', niche: 'Fashion Retail', tags: ['Marketplace', 'Performance'] },
-    { title: 'Canvas Interiors', niche: 'Home & Living', tags: ['Website', 'Content'] },
-  ],
+  /* Work, clients and testimonials are EMPTY ON PURPOSE.
+     What was here — Aurora Skincare, Pulse Fitness, Meridian Legal and six
+     unattributed quotes — came from the reference builds. Publishing invented
+     clients is worse than publishing none: an evaluator checks one name,
+     finds nothing, and stops reading.
 
-  clients: [
-    'Aurora Skincare', 'Pulse Fitness', 'Meridian Legal', 'Loom & Thread', 'Terra Foods',
-    'Nimbus Realty', 'Vault & Co.', 'Stride Footwear', 'Canvas Interiors', 'Halcyon Cafe',
-    'Orbit Logistics', 'Verde Organics', 'Atlas Motors', 'Lumen Studio', 'Sage Clinic', 'Kite Travel',
-  ],
+     Add real entries to switch each section back on. Empty arrays hide them.
+       work:         { title, niche, tags: [], case?: 'case-slug' }
+       clients:      'Client Name'
+       testimonials: { quote, name, role }   <- name is REQUIRED now
+  */
+  work: [],
+  clients: [],
+  testimonials: [],
 
-  testimonials: [
-    { quote: 'They rebuilt our site and rewrote how we think about the funnel. Conversions are up sharply and, more importantly, we finally understand why.', role: 'Founder, D2C Skincare Brand' },
-    { quote: 'Our social presence went from an afterthought to our best acquisition channel. The content actually sounds like us, which is rarer than it should be.', role: 'Marketing Head, Fitness Studio Chain' },
-    { quote: 'Ad costs down, qualified leads up. They cut the spend that was not working instead of just asking for a bigger budget.', role: 'Managing Partner, Legal Services Firm' },
-    { quote: 'The reporting is the difference. We see exactly what each channel returns, so budget conversations take ten minutes instead of a week.', role: 'Director, FMCG Brand' },
-    { quote: 'They handled our marketplace listings end to end. Visibility improved within weeks and the operational load on our team dropped.', role: 'Co-founder, Handloom Label' },
-    { quote: 'Strategy through execution with one team. No hand-offs, no finger-pointing, and month-over-month growth we can point at.', role: 'CEO, Real Estate Group' },
-  ],
+  /* Empty until real case studies exist. The gate still works the moment you
+     add one — template in _private/case-studies.md. */
+  cases: {},
 
-  /* Case studies are GATED. Only the teaser lives here — challenge, solution,
-     features and quotes were moved to _private/case-studies.md precisely so
-     they are not in the browser bundle. Do not paste them back. */
-  cases: {
-    'ecommerce-revolution': {
-      title: 'E-commerce Revolution',
-      category: 'Website Development',
-      client: 'D2C Skincare Brand',
-      duration: '4 months',
-      teaser: 'Traffic was climbing while sales fell. The rebuild targeted checkout friction, load time and product discovery — and moved conversion inside the first month.',
-      results: [
-        { num: '+340%', lbl: 'Conversion Rate', sub: 'From 1.2% to 5.3%' },
-        { num: '+85%', lbl: 'Page Speed', sub: 'Faster load times' },
-        { num: '-45%', lbl: 'Cart Abandonment', sub: 'From 78% to 43%' },
-        { num: '2.1x', lbl: 'Revenue', sub: 'Year-over-year growth' },
-      ],
-      tags: ['Shopify', 'Custom Design', 'Performance', 'UX/UI'],
-      inside: ['The full teardown of what was broken', 'Our solution and build sequence', 'Six shipped features in detail', 'Verbatim client debrief'],
-    },
-    'social-media-growth': {
-      title: 'Social Media Growth',
-      category: 'Social Media Marketing',
-      client: 'Fitness Studio Chain',
-      duration: '6 months',
-      teaser: 'Roughly 500 followers and no reliable acquisition channel. A community-first strategy turned social into the studio’s best source of new members.',
-      results: [
-        { num: '+450%', lbl: 'Follower Growth', sub: 'Across all platforms' },
-        { num: '+280%', lbl: 'Engagement Rate', sub: 'Average per post' },
-        { num: '+190%', lbl: 'Lead Generation', sub: 'New member sign-ups' },
-        { num: '+320%', lbl: 'Brand Mentions', sub: 'User-generated content' },
-      ],
-      tags: ['Instagram', 'Meta Ads', 'Community', 'Content'],
-      inside: ['The content strategy in full', 'Community and influencer playbook', 'Posting cadence and formats that worked', 'Verbatim client debrief'],
-    },
-    'ppc-performance-boost': {
-      title: 'PPC Performance Boost',
-      category: 'Performance Marketing',
-      client: 'Legal Services Firm',
-      duration: '3 months',
-      teaser: 'A large monthly ad budget producing mostly unqualified leads. A full account restructure cut acquisition cost while tripling qualified enquiries.',
-      results: [
-        { num: '-65%', lbl: 'Cost Per Acquisition', sub: 'Against the prior baseline' },
-        { num: '+300%', lbl: 'Qualified Leads', sub: 'Monthly, post-restructure' },
-        { num: '8.2x', lbl: 'ROAS', sub: 'Return on ad spend' },
-        { num: '+180%', lbl: 'Click-Through Rate', sub: 'Improved ad relevance' },
-      ],
-      tags: ['Google Ads', 'Meta Ads', 'Analytics', 'CRO'],
-      inside: ['Account structure before and after', 'Keyword and negative-keyword method', 'Landing page test results', 'Verbatim client debrief'],
-    },
-  },
 };
 
 /* --------------------------------------------------------------------------
@@ -704,8 +639,15 @@ const DATA = {
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-/** Write html into #id if that element exists on this page. Lets one script serve every page. */
-const mount = (id, html) => { const n = document.getElementById(id); if (n) n.innerHTML = html; };
+/** Write html into #id if that element exists. Blank content hides the section
+ *  outright — an empty band of padding reads as a broken page, and several
+ *  sections are legitimately empty until real content exists. */
+const mount = (id, html) => {
+  const n = document.getElementById(id);
+  if (!n) return;
+  if (!html || !String(html).trim()) { n.style.display = 'none'; return; }
+  n.innerHTML = html;
+};
 
 /** Escape anything that reaches innerHTML from the URL. */
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
@@ -718,7 +660,7 @@ const stars = () => `<div class="stars">${icon('star').repeat(5)}</div>`;
 /* Editorial index row, not a card. Ten cards read as a wall; ten rows read
    as a table of contents — and scale to twenty without redesigning. */
 const serviceRow = ([slug, s], i) => `
-  <a class="srv reveal" href="detail.html?service=${slug}">
+  <a class="srv reveal" href="services/${slug}.html">
     <span class="srv-n">${String(i + 1).padStart(2, '0')}</span>
     <span class="srv-ic">${icon(s.icon)}</span>
     <span class="srv-body">
@@ -738,15 +680,16 @@ const workCard = (w) => {
       ${w.case ? `<span class="card-link">View case study ${icon('arrowR')}</span>` : ''}
     </div>`;
   return w.case
-    ? `<a class="work reveal" href="detail.html?case=${w.case}">${inner}</a>`
+    ? `<a class="work reveal" href="work/${w.case}.html">${inner}</a>`
     : `<div class="work reveal">${inner}</div>`;
 };
 
+/* A testimonial without a name reads as invented — so name is required. */
 const quoteCard = (t) => `
   <figure class="card quote reveal">
     ${stars()}
     <blockquote>“${t.quote}”</blockquote>
-    <figcaption><span>${t.role}</span></figcaption>
+    <figcaption><b>${t.name}</b><span>${t.role}</span></figcaption>
   </figure>`;
 
 /* --------------------------------------------------------------------------
@@ -781,7 +724,7 @@ function renderChrome() {
         <div>
           <h4>Services</h4>
           <ul>${Object.entries(DATA.services).map(([slug, s]) =>
-            `<li><a href="detail.html?service=${slug}">${s.title}</a></li>`).join('')}</ul>
+            `<li><a href="services/${slug}.html">${s.title}</a></li>`).join('')}</ul>
         </div>
         <div>
           <h4>Company</h4>
@@ -834,9 +777,9 @@ function renderHome() {
           <a class="btn btn-ghost" href="portfolio.html">See Our Work</a>
         </div>
       </div>
-      <div class="hero-stats">
+      ${h.stats.length ? `<div class="hero-stats">
         ${h.stats.map((s) => `<div><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join('')}
-      </div>
+      </div>` : ''}
     </div>`);
 
   mount('pillars', `
@@ -958,15 +901,15 @@ function renderHome() {
             <p>${w.text}</p>
           </article>`).join('')}
       </div>
-      <div class="stats-band reveal">
+      ${DATA.stats.length ? `<div class="stats-band reveal">
         <h3>Trusted by Industry Leaders</h3>
         <div class="grid grid-4">
           ${DATA.stats.map((s) => `<div><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join('')}
         </div>
-      </div>
+      </div>` : ''}
     </div>`);
 
-  mount('portfolio', `
+  mount('portfolio', DATA.work.length ? `
     <div class="container">
       <div class="section-head split reveal">
         <span class="eyebrow">Selected work</span>
@@ -977,9 +920,17 @@ function renderHome() {
       <div class="row-end reveal">
         <a class="btn btn-ghost" href="portfolio.html">View Full Portfolio ${icon('arrowR')}</a>
       </div>
+    </div>` : `
+    <div class="container">
+      <div class="section-head split reveal">
+        <span class="eyebrow">Selected work</span>
+        <h2>Work samples, on request.</h2>
+        <p class="lead">Most of our engagements sit under NDA, so we don't publish client names or numbers here. Tell us your sector and we'll send the examples that are actually relevant to it.</p>
+      </div>
+      ${requestWorkForm()}
     </div>`);
 
-  mount('testimonials', `
+  mount('testimonials', !DATA.testimonials.length ? '' : `
     <div class="container">
       <div class="section-head center reveal">
         <span class="eyebrow">Client feedback</span>
@@ -1068,6 +1019,43 @@ function contactSection() {
    ponytail: gate is client-side, so it captures leads but does NOT protect
    content — that only works because the full study was moved out of the
    bundle into _private/. Never put the narrative back into DATA. */
+/* Work-samples request. Same mechanism as the case-study gate: capture the
+   lead, send the relevant material by email. Nothing is claimed on the page. */
+function requestWorkForm() {
+  return `
+    <div class="gate reveal">
+      <div class="gate-card">
+        <span class="locked">${icon('lock')} Sent by email</span>
+        <h3 style="margin-top:1.25rem">Ask for relevant examples</h3>
+        <p>We'll send work from your sector, with the client's permission, and the numbers behind it.</p>
+        <form id="work-form" novalidate>
+          <div class="row">
+            <div class="field">
+              <label for="w-name">Full name</label>
+              <input id="w-name" name="name" required autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="w-company">Company</label>
+              <input id="w-company" name="company" required autocomplete="organization">
+            </div>
+          </div>
+          <div class="field">
+            <label for="w-email">Work email</label>
+            <input id="w-email" name="email" type="email" required autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="w-sector">Your sector</label>
+            <input id="w-sector" name="sector" required placeholder="Healthcare, education, D2C, retail…">
+          </div>
+          <input type="hidden" name="request" value="work samples">
+          <button class="btn btn-primary" type="submit">Send me relevant work ${icon('arrowR')}</button>
+          <div class="form-status" id="work-status" role="status" aria-live="polite"></div>
+          <p class="gate-note">We send the examples and nothing else. No sequence, no list.</p>
+        </form>
+      </div>
+    </div>`;
+}
+
 function wireForm(formSel = '#contact-form', statusSel = '#form-status', okMsg = null) {
   const form = $(formSel);
   if (!form) return;
@@ -1116,18 +1104,23 @@ function wireForm(formSel = '#contact-form', statusSel = '#form-status', okMsg =
    Portfolio + Clients pages
    -------------------------------------------------------------------------- */
 function renderPortfolioPage() {
-  mount('portfolio-page', `
+  if (!document.getElementById('portfolio-page')) return;
+  mount('portfolio-page', DATA.work.length ? `
     <div class="container">
       <div class="grid grid-3">${DATA.work.map(workCard).join('')}</div>
-    </div>`);
+    </div>` : `
+    <div class="container">${requestWorkForm()}</div>`);
 }
 
 function renderClientsPage() {
-  mount('clients-page', `
-    <div class="container">
-      <div class="logo-wall reveal">${DATA.clients.map((c) => `<div>${c}</div>`).join('')}</div>
-      <div class="grid grid-3" style="margin-top:4rem">${DATA.testimonials.slice(0, 3).map(quoteCard).join('')}</div>
-    </div>`);
+  if (!document.getElementById('clients-page')) return;
+  const wall = DATA.clients.length
+    ? `<div class="logo-wall reveal">${DATA.clients.map((c) => `<div>${c}</div>`).join('')}</div>` : '';
+  const quotes = DATA.testimonials.length
+    ? `<div class="grid grid-3" style="margin-top:var(--sp-5)">${DATA.testimonials.slice(0, 3).map(quoteCard).join('')}</div>` : '';
+  mount('clients-page', (wall || quotes)
+    ? `<div class="container">${wall}${quotes}</div>`
+    : `<div class="container">${requestWorkForm()}</div>`);
 }
 
 /* --------------------------------------------------------------------------
@@ -1301,7 +1294,11 @@ function selftest() {
   const q = (s) => new URLSearchParams(s);
 
   ok(detailHTML(q('service=ai-search-optimisation')).html.includes('AI Search Optimisation'), 'service route');
-  ok(detailHTML(q('case=ppc-performance-boost')).html.includes('PPC Performance Boost'), 'case route');
+  const firstCase = Object.keys(DATA.cases)[0];
+  if (firstCase) {
+    ok(detailHTML(q(`case=${firstCase}`)).html.includes(DATA.cases[firstCase].title), 'case route');
+    ok(detailHTML(q(`case=${firstCase}`)).html.includes('gate-form'), 'case study is gated');
+  }
   ok(detailHTML(q('service=nope')).html.includes('Page Not Found'), 'unknown slug → not found');
   ok(detailHTML(q('')).html.includes('Page Not Found'), 'empty query → not found');
   ok(!detailHTML(q('service=<img src=x onerror=alert(1)>')).html.includes('<img'), 'slug is escaped, not injected as markup');
@@ -1363,6 +1360,15 @@ function selftest() {
   DATA.pillars.forEach((p) => p.services.forEach((name) =>
     ok(titles.includes(name), `pillar "${p.id}" lists real service "${name}"`)));
   ok(DATA.sectors.length >= 4, 'sectors listed');
+
+  /* Honesty guards. These fail the build if fabricated proof comes back. */
+  const FAKE = ['500+', '5X', '98%', '50+', 'Aurora Skincare', 'Pulse Fitness', 'Meridian Legal'];
+  const blob = JSON.stringify([DATA.hero.stats, DATA.stats, DATA.work, DATA.clients, DATA.cases]);
+  FAKE.forEach((f) => ok(!blob.includes(f), `inherited placeholder "${f}" is back in DATA`));
+  DATA.testimonials.forEach((t, i) =>
+    ok(t.name && t.role && t.quote, `testimonial ${i} needs a real name — anonymous reads as invented`));
+  Object.entries(DATA.cases).forEach(([k, c]) =>
+    ok(c.teaser && c.results.length, `case "${k}" incomplete`));
   // Arrow-key wrap: left from first → last, right from last → first.
   const wrap = (i, n) => (i + n) % n;
   ok(wrap(-1, 3) === 2, 'ArrowLeft from first wraps to last');
@@ -1387,5 +1393,12 @@ document.addEventListener('DOMContentLoaded', () => {
   wireForm();
   wireForm('#gate-form', '#gate-status',
     'On its way — check your inbox in the next few minutes.');
+  wireForm('#work-form', '#work-status',
+    'Thanks — relevant examples will be with you within one business day.');
   observeReveals();
 });
+
+/* Node-only: lets build.cjs pre-render static pages. Inert in the browser. */
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { CONFIG, DATA, LOGO, icon, logo, ticks, tags, serviceDetail, caseDetail, contactSection };
+}
