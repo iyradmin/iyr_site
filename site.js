@@ -829,6 +829,7 @@ function renderHome() {
         <p class="lead">All three have to be true, in this order. Most of what goes wrong is a problem in one layer being treated as a problem in another — and paid for at the wrong one.</p>
       </div>
 
+      <p class="swipe-hint">Swipe</p>
       <div class="layers">
         ${DATA.pillars.map((p, i) => `
           <article class="layer reveal">
@@ -857,6 +858,7 @@ function renderHome() {
         <h2>The platforms we actually operate in.</h2>
         <p class="lead">Not a badge wall. These are the consoles our team is in every week — across search, social, marketplace and quick-commerce.</p>
       </div>
+      <p class="swipe-hint">Swipe</p>
       <div class="stack-grid">
         ${DATA.stack.map((g) => `
           <div class="stack-group reveal">
@@ -1098,32 +1100,90 @@ function requestWorkForm() {
     </div>`;
 }
 
+/* Field-level validation. Previously errors appeared only in a status box at
+   the foot of the form and only on submit — the named anti-pattern ("show
+   only a top-level error without identifying each invalid field", "validate
+   only on submit"). Now: a message under each field, linked by
+   aria-describedby, validated on blur once a field has been touched, with
+   focus moved to the first offender on a failed submit. */
+const FIELD_MSG = {
+  valueMissing: (el) => `${el.dataset.label || 'This field'} is required`,
+  typeMismatch: (el) => (el.type === 'email' ? 'Enter a valid email address, e.g. name@company.com' : 'Check this value'),
+  tooShort: (el) => `Needs at least ${el.minLength} characters`,
+  patternMismatch: () => 'Check the format of this value',
+};
+
+function fieldError(el) {
+  const v = el.validity;
+  if (v.valid) return '';
+  for (const key of Object.keys(FIELD_MSG)) if (v[key]) return FIELD_MSG[key](el);
+  return el.validationMessage || 'Check this value';
+}
+
+function markField(el) {
+  const wrap = el.closest('.field');
+  if (!wrap) return true;
+  let slot = wrap.querySelector('.field-err');
+  if (!slot) {
+    slot = document.createElement('p');
+    slot.className = 'field-err';
+    slot.id = `${el.id}-err`;
+    wrap.appendChild(slot);
+  }
+  const msg = fieldError(el);
+  slot.textContent = msg;
+  wrap.classList.toggle('invalid', !!msg);
+  el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+  if (msg) el.setAttribute('aria-describedby', slot.id);
+  else el.removeAttribute('aria-describedby');
+  return !msg;
+}
+
+function wireValidation(form) {
+  $$('input, textarea, select', form).forEach((el) => {
+    if (el.type === 'hidden') return;
+    const label = form.querySelector(`label[for="${el.id}"]`);
+    if (label) el.dataset.label = label.textContent.replace(/\s*\(optional\)\s*/i, '').trim();
+    // validate on blur, but only once the field has been touched
+    el.addEventListener('blur', () => { if (el.dataset.touched) markField(el); });
+    el.addEventListener('input', () => {
+      el.dataset.touched = '1';
+      if (el.closest('.field')?.classList.contains('invalid')) markField(el);
+    });
+  });
+}
+
 function wireForm(formSel = '#contact-form', statusSel = '#form-status', okMsg = null) {
   const form = $(formSel);
   if (!form) return;
   const status = $(statusSel);
+  wireValidation(form);
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     status.className = 'form-status';
+    status.textContent = '';
 
-    if (!form.checkValidity()) {
+    const fields = $$('input, textarea, select', form).filter((el) => el.type !== 'hidden');
+    fields.forEach((el) => { el.dataset.touched = '1'; });
+    const bad = fields.filter((el) => !markField(el));
+    if (bad.length) {
       status.className = 'form-status err';
-      status.textContent = 'Please fill in every required field with a valid email.';
-      form.reportValidity();
+      status.textContent = `${bad.length} field${bad.length > 1 ? 's need' : ' needs'} attention — see the notes above.`;
+      bad[0].focus();                      // land the user on the first problem
       return;
     }
 
     const btn = form.querySelector('button[type=submit]');
+    const label = btn.innerHTML;
     btn.disabled = true;
-    btn.style.opacity = '.6';
+    btn.setAttribute('aria-busy', 'true');
+    btn.textContent = 'Sending…';
 
     try {
       if (CONFIG.formEndpoint) {
         const res = await fetch(CONFIG.formEndpoint, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(form),
+          method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form),
         });
         if (!res.ok) throw new Error(res.status);
       }
@@ -1132,12 +1192,14 @@ function wireForm(formSel = '#contact-form', statusSel = '#form-status', okMsg =
         ? (okMsg || 'Message sent. We’ll get back to you within one business day.')
         : 'Validated. Set CONFIG.formEndpoint in site.js to actually deliver this.';
       form.reset();
+      fields.forEach((el) => { delete el.dataset.touched; markField(el); });
     } catch {
       status.className = 'form-status err';
       status.textContent = `Could not send. Please email us directly at ${CONFIG.email}.`;
     } finally {
       btn.disabled = false;
-      btn.style.opacity = '';
+      btn.removeAttribute('aria-busy');
+      btn.innerHTML = label;
     }
   });
 }

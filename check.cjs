@@ -56,6 +56,8 @@ const El = () => ({
   addEventListener() {}, focus() {}, setAttribute() {}, getAttribute() { return 'x'; },
   checkValidity() { return true; }, reportValidity() {}, reset() {},
   querySelector() { return El(); }, querySelectorAll() { return []; },
+  closest() { return El(); }, type: 'text', id: 'x', validity: { valid: true },
+  removeAttribute() {}, minLength: 0, validationMessage: '',
 });
 
 function boot(search, base = '') {
@@ -218,6 +220,19 @@ head('mobile');
   ok(/\.ab-call, \.ab-cta \{[^}]*min-height: 48px/.test(css), 'action bar targets under 48px');
   ok(/env\(safe-area-inset-bottom/.test(css), 'action bar ignores the iPhone safe area');
   ok(/\.ab-on \.site-footer \{[^}]*padding-bottom/.test(css), 'action bar will cover the footer');
+
+  // forms: errors beside the field, validated before submit, focus moved
+  ok(/aria-describedby/.test(src), 'field errors are not linked with aria-describedby');
+  ok(/aria-invalid/.test(src), 'invalid fields are not marked with aria-invalid');
+  ok(/addEventListener\('blur'/.test(src), 'fields are not validated on blur');
+  ok(/bad\[0\]\.focus\(\)/.test(src), 'focus is not moved to the first invalid field');
+  ok(/\.field-err/.test(css), 'no styling for field-level errors');
+  ok(/aria-busy/.test(src), 'submit button has no busy state');
+
+  // horizontal decks must stay real scroll containers, not JS carousels
+  ok(/scroll-snap-type: x mandatory/.test(css), 'mobile decks are not scroll-snapped');
+  ok(/overscroll-behavior-x: contain/.test(css), 'sideways scroll will drag the page with it');
+  ok(/\.swipe-hint/.test(css), 'no swipe affordance');
 }
 
 ok(fs.existsSync('sitemap.xml'), 'sitemap.xml missing');

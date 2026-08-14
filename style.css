@@ -727,3 +727,61 @@ h4 { font-size: 1.05rem; letter-spacing: -0.02em; }
   .ab-on .site-footer { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
 }
 @media (prefers-reduced-motion: reduce) { .actionbar { transition: none; } }
+
+/* ==========================================================================
+   Field-level validation. A message under the offending input, not a single
+   line at the foot of the form.
+   ========================================================================== */
+.field-err {
+  display: flex; align-items: flex-start; gap: 0.35rem;
+  margin-top: 0.4rem; font-size: 0.85rem; font-weight: 600; color: #b91c1c;
+}
+.field-err:empty { display: none; }
+.field-err::before { content: "!"; flex: none; width: 1.05rem; height: 1.05rem; border-radius: 50%;
+  background: #b91c1c; color: #fff; font-size: 0.7rem; line-height: 1.05rem; text-align: center; font-weight: 800; }
+.field.invalid input, .field.invalid textarea, .field.invalid select { border-color: #b91c1c; }
+.field.invalid input:focus, .field.invalid textarea:focus { outline-color: #b91c1c; }
+button[aria-busy="true"] { opacity: 0.65; cursor: progress; }
+
+/* ==========================================================================
+   Mobile: peer sets scroll sideways instead of stacking. All content stays in
+   the DOM and reachable by keyboard — this is a scroll container, not a JS
+   carousel that hides slides. The peeking next card is the affordance.
+   ========================================================================== */
+@media (max-width: 980px) {
+  .layers {
+    display: flex; gap: 0; border-top: 1px solid var(--line);
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.5rem; overscroll-behavior-x: contain;
+    margin-inline: -1.5rem; padding-inline: 1.5rem;
+    scrollbar-width: none;
+  }
+  .layers::-webkit-scrollbar { display: none; }
+  .layer {
+    flex: 0 0 86%; scroll-snap-align: start;
+    padding: var(--sp-3) var(--sp-3) var(--sp-3) 0;
+    border-right: 1px solid var(--line); border-bottom: 0;
+  }
+  .layer:last-child { border-right: 0; padding-right: 1.5rem; }
+  .layer-solves[open] { padding-bottom: 0.25rem; }
+
+  .stack-grid {
+    display: flex; gap: 1px; overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.5rem; overscroll-behavior-x: contain;
+    margin-inline: -1.5rem; padding-inline: 1.5rem; border-radius: 0;
+    border-inline: 0; scrollbar-width: none;
+  }
+  .stack-grid::-webkit-scrollbar { display: none; }
+  .stack-group { flex: 0 0 78%; scroll-snap-align: start; }
+
+  /* "swipe" affordance, in case the peek is missed */
+  .swipe-hint {
+    display: flex; align-items: center; gap: 0.4rem; margin-top: var(--sp-2);
+    font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+  }
+  .swipe-hint::after { content: "→"; animation: nudge 1.8s var(--ease) infinite; }
+  @keyframes nudge { 0%,100% { transform: translateX(0) } 50% { transform: translateX(4px) } }
+}
+@media (min-width: 981px) { .swipe-hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { .swipe-hint::after { animation: none; } }
