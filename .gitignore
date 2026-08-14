@@ -1,0 +1,15 @@
+# OS / editor junk
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+*~
+
+# scratch harnesses — regenerated on demand
+_c.cjs
+_m.cjs
+_g.cjs
+_check.cjs
+_add.txt
+_stack.txt
+_newservices.txt

@@ -1,0 +1,25 @@
+Facebook|logos:facebook|Facebook.svg
+Business Profile|logos:google-icon|Business_Profile.svg
+Looker Studio|logos:google-data-studio|Looker_Studio.svg
+Instagram|logos:instagram-icon|Instagram.svg
+WhatsApp Business|logos:whatsapp-icon|WhatsApp_Business.svg
+Tag Manager|logos:google-tag-manager|Tag_Manager.svg
+JioMart|thesvg-color:jio|JioMart.svg
+YouTube|logos:youtube-icon|YouTube.svg
+Hotjar|logos:hotjar-icon|Hotjar.svg
+LinkedIn|logos:linkedin-icon|LinkedIn.svg
+Ahrefs|thesvg-color:ahrefs|Ahrefs.svg
+Amazon|thesvg-color:amazon|Amazon.svg
+Meta Ads Manager|logos:meta-icon|Meta_Ads_Manager.svg
+Analytics 4|logos:google-analytics|Analytics_4.svg
+Shopify|logos:shopify|Shopify.svg
+Search Console|logos:google-search-console|Search_Console.svg
+Pinterest|logos:pinterest|Pinterest.svg
+Google Ads|logos:google-ads|Google_Ads.svg
+Swiggy Instamart|thesvg-color:swiggy|Swiggy_Instamart.svg
+Semrush|thesvg-color:semrush|Semrush.svg
+Flipkart|commons:File:Flipkart logo (2026).svg|Flipkart.svg
+Myntra|commons:File:65c5da9f878952603e370d03 Myntra-Logo 1.svg|Myntra.svg
+Nykaa|commons:File:Nykaa New Logo.svg|Nykaa.svg
+Blinkit|commons:File:Blinkit-yellow-rounded.svg|Blinkit.svg
+Zepto|commons:File:Zepto Logo.svg|Zepto.svg
