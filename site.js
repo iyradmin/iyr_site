@@ -18,8 +18,11 @@ const CONFIG = {
   // Single repeated CTA (one verb everywhere beats five variants).
   // Deliberately sector-neutral: works for a founder and a procurement committee.
   cta: 'Book a Strategy Call',
-  phone: '+91 00000 00000',
-  email: 'hello@example.com',
+  // NOTE: as supplied this is 9 digits after +91. Indian mobiles are 10.
+  // Verify before launch — a wrong number on the primary conversion path
+  // costs more than every other issue on this site combined.
+  phone: '+91 63596 5680',
+  email: 'motishprakash@gmail.com',
   address: 'Jaipur, Rajasthan, India',
   hours: 'Mon–Sat, 10:00–19:00 IST',
   social: { instagram: '#', facebook: '#', linkedin: '#' },
@@ -731,7 +734,10 @@ function renderChrome() {
       </nav>
     </div>`);
 
+  // Only render socials that actually point somewhere. Dead '#' icons in a
+  // footer read as an abandoned site.
   const social = Object.entries(CONFIG.social)
+    .filter(([, url]) => url && url !== '#')
     .map(([k, url]) => `<a href="${url}" aria-label="${k}" target="_blank" rel="noopener">${icon(k)}</a>`).join('');
 
   mount('footer', `

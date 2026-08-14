@@ -174,6 +174,24 @@ for (const s of services.slice(0, 2)) {
   ok(checked > 5, 'runtime chrome produced too few links to verify');
 }
 
+/* Launch blockers. These are real details on the primary conversion path —
+   a wrong one costs more than every design issue combined. */
+head('contact details');
+{
+  const src = fs.readFileSync('site.js', 'utf8');
+  const phone = (src.match(/phone: '([^']+)'/) || [])[1] || '';
+  const email = (src.match(/email: '([^']+)'/) || [])[1] || '';
+  const digits = phone.replace(/\D/g, '');
+  ok(!/00000/.test(phone), 'phone is still the placeholder');
+  ok(!/example\.com/.test(email), 'email is still the placeholder');
+  ok(digits.length === 12 && digits.startsWith('91'),
+     `phone has ${digits.length} digits (${phone}) — an Indian mobile is +91 plus 10`);
+  const origin = fs.existsSync('build.cjs') ? fs.readFileSync('build.cjs', 'utf8') : '';
+  if (/inyourreach\.example/.test(origin)) {
+    console.log('  NOTE  canonical URLs still use the placeholder domain — set SITE_ORIGIN before launch');
+  }
+}
+
 ok(fs.existsSync('sitemap.xml'), 'sitemap.xml missing');
 ok(fs.existsSync('robots.txt'), 'robots.txt missing');
 if (fs.existsSync('sitemap.xml')) {

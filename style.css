@@ -497,11 +497,15 @@ h4 { font-size: 1.05rem; letter-spacing: -0.02em; }
 .stack-head svg { width: 1.15rem; height: 1.15rem; color: var(--accent-ink); flex: none; }
 .stack-head h3 { font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; color: var(--muted); }
 .stack-tools { display: flex; flex-direction: column; gap: 0.7rem; }
-.stack-tools li { display: flex; align-items: center; gap: 0.7rem; font-size: 0.94rem; font-weight: 500; }
+.stack-tools li { display: flex; align-items: center; gap: 0.8rem; font-size: 0.94rem; font-weight: 500; }
 .stack-tools .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--c, var(--accent)); flex: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--c, var(--accent)) 15%, transparent); }
-.stack-tools .logo { width: 1.15rem; height: 1.15rem; flex: none; }
-.stack-tools li:hover .logo { transform: scale(1.12); }
-.stack-tools .logo { transition: transform 0.25s var(--ease); }
+/* 18px was too small to read as a brand mark — a logo you can't recognise is
+   worse than no logo. 28px sits in a tinted tile so light marks stay visible. */
+.stack-tools .logo {
+  width: 1.75rem; height: 1.75rem; flex: none;
+  transition: transform 0.25s var(--ease);
+}
+.stack-tools li:hover .logo { transform: scale(1.1); }
 
 /* ==========================================================================
    Gated case study — request form replaces the full narrative
