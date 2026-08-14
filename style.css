@@ -551,3 +551,13 @@ h4 { font-size: 1.05rem; letter-spacing: -0.02em; }
   .layer:first-child { padding-top: var(--sp-4); }
   .layer:last-child { border-bottom: 0; }
 }
+
+/* ==========================================================================
+   Client strip — real names, directly under the hero. The strongest proof
+   currently available, so it sits where it is seen first.
+   ========================================================================== */
+.strip-section { padding: var(--sp-4) 0; border-block: 1px solid var(--line); background: var(--surface); }
+.strip-label { font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: var(--sp-2); }
+.strip { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; align-items: center; }
+.strip li { font-size: clamp(1rem, 1.6vw, 1.2rem); font-weight: 700; letter-spacing: -0.02em; color: var(--fg); }
+@media (max-width: 700px) { .strip { gap: 0.5rem 1.25rem; } .strip li { font-size: 1rem; } }

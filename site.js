@@ -624,7 +624,16 @@ const DATA = {
        testimonials: { quote, name, role }   <- name is REQUIRED now
   */
   work: [],
-  clients: [],
+
+  /* REAL clients, supplied by the team. Names only — sector and scope of work
+     are deliberately absent because we have not been told them yet, and
+     guessing "Jog Hospital = healthcare" is how invented detail creeps back in.
+     Add { name, sector } once confirmed and the strip can show sectors too. */
+  clients: [
+    'Saadaa', 'Coffee Sutra', 'Lama', 'Jog Hospital', 'Shasn',
+    'Huwant Lifestyle', 'Crewcore', 'Ridev', 'Baaz Bikes',
+  ],
+
   testimonials: [],
 
   /* Empty until real case studies exist. The gate still works the moment you
@@ -780,6 +789,14 @@ function renderHome() {
       ${h.stats.length ? `<div class="hero-stats">
         ${h.stats.map((s) => `<div><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join('')}
       </div>` : ''}
+    </div>`);
+
+  mount('client-strip', !DATA.clients.length ? '' : `
+    <div class="container">
+      <p class="strip-label">Working with</p>
+      <ul class="strip">
+        ${DATA.clients.map((c) => `<li>${c}</li>`).join('')}
+      </ul>
     </div>`);
 
   mount('pillars', `
