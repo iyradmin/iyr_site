@@ -798,7 +798,10 @@ function renderHome() {
   mount('hero', `
     <div class="container">
       <span class="eyebrow">${h.eyebrow}</span>
-      <h1>${h.title}<br><span class="accent">${h.titleAccent}</span></h1>
+      <h1>
+        <span class="line" style="--i:0"><span>${h.title}</span></span>
+        <span class="line" style="--i:1"><span class="accent">${h.titleAccent}</span></span>
+      </h1>
       <div class="hero-body">
         <p class="lead">${h.lead}</p>
         <div class="hero-actions">
@@ -1314,14 +1317,45 @@ function renderDetailPage() {
 function observeReveals() {
   const els = $$('.reveal:not(.in)');
   if (!('IntersectionObserver' in window)) { els.forEach((e) => e.classList.add('in')); return; }
+
+  /* Stagger by position among siblings, not by intersection batch order —
+     batch order gives the same element a different delay on every visit. */
+  els.forEach((el) => {
+    const sibs = [...(el.parentElement ? el.parentElement.children : [])].filter((c) => c.classList.contains('reveal'));
+    el.style.setProperty('--i', Math.min(sibs.indexOf(el), 8));
+    /* Spatial continuity: side-by-side columns enter from their own side. */
+    if (!el.dataset.dir && sibs.length === 2) el.dataset.dir = sibs.indexOf(el) === 0 ? 'left' : 'right';
+  });
+
   const io = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
+    entries.forEach((e) => {
       if (!e.isIntersecting) return;
-      setTimeout(() => e.target.classList.add('in'), i * 70);   // stagger siblings
+      e.target.classList.add('in');
       io.unobserve(e.target);
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  }, { threshold: 0.1, rootMargin: '0px 0px -70px 0px' });
   els.forEach((e) => io.observe(e));
+}
+
+/* Header condense + reading progress. One rAF-throttled scroll listener for
+   both; two listeners doing scroll maths is two chances to jank. */
+function wireScroll() {
+  const bar = document.createElement('div');
+  bar.className = 'progress';
+  document.body.appendChild(bar);
+
+  let ticking = false;
+  const update = () => {
+    const y = window.scrollY || 0;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    document.body.classList.toggle('scrolled', y > 40);
+    bar.style.setProperty('--p', max > 0 ? Math.min(y / max, 1) : 0);
+    ticking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
 }
 
 /* --------------------------------------------------------------------------
@@ -1435,6 +1469,7 @@ document.addEventListener('DOMContentLoaded', () => {
   wireForm('#work-form', '#work-status',
     'Thanks — relevant examples will be with you within one business day.');
   observeReveals();
+  wireScroll();
 });
 
 /* Node-only: lets build.cjs pre-render static pages. Inert in the browser. */

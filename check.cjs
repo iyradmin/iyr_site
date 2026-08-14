@@ -49,7 +49,9 @@ ok(!/\{\s*>/.test(css), 'style.css: stray ">" where a declaration should start')
 head('runtime');
 const El = () => ({
   _h: '', set innerHTML(v) { this._h = v; }, get innerHTML() { return this._h; },
-  classList: { add() {}, remove() {}, toggle() { return true; } }, style: {}, dataset: {},
+  classList: { add() {}, remove() {}, toggle() { return true; } },
+  style: { setProperty() {}, removeProperty() {} }, dataset: {},
+  parentElement: null, children: [], appendChild() {},
   hidden: false, tabIndex: 0, textContent: '',
   addEventListener() {}, focus() {}, setAttribute() {}, getAttribute() { return 'x'; },
   checkValidity() { return true; }, reportValidity() {}, reset() {},
@@ -64,10 +66,17 @@ function boot(search, base = '') {
     getElementById: (i) => (nodes[i] ||= El()),
     querySelector: (s) => (/form|status|year|nav/.test(s) ? El() : null),
     querySelectorAll: (s) => (s.includes('reveal') || s.includes('data-cta') ? [El(), El()] : []),
-    body: { dataset: { base }, classList: { add() {}, remove() {}, toggle() { return true; } } },
+    createElement: () => El(),
+    documentElement: { scrollHeight: 5000 },
+    body: {
+      dataset: { base }, appendChild() {},
+      classList: { add() {}, remove() {}, toggle() { return true; } },
+    },
   };
-  global.window = {}; global.location = { search };
+  global.window = { addEventListener() {}, scrollY: 0, innerHeight: 900 };
+  global.location = { search };
   global.IntersectionObserver = class { observe() {} unobserve() {} };
+  global.requestAnimationFrame = (f) => f();
   global.setTimeout = (f) => f();
   require('./site.js');
   global.__r();
