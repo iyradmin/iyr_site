@@ -201,6 +201,25 @@ head('contact details');
   }
 }
 
+/* Mobile essentials that are easy to regress and invisible on a desktop. */
+head('mobile');
+{
+  const src = fs.readFileSync('site.js', 'utf8');
+  const css = fs.readFileSync('style.css', 'utf8');
+  // phone/email fields must summon the right keyboard
+  const telFields = (src.match(/type="tel"/g) || []).length;
+  const telModes  = (src.match(/inputmode="tel"/g) || []).length;
+  ok(telFields === telModes, `${telFields} tel inputs but ${telModes} inputmode="tel" — wrong keyboard on mobile`);
+  const mailFields = (src.match(/type="email"/g) || []).length;
+  const mailModes  = (src.match(/inputmode="email"/g) || []).length;
+  ok(mailFields === mailModes, `${mailFields} email inputs but ${mailModes} inputmode="email"`);
+  // action bar: reachable, thumb-sized, clear of the iPhone home indicator
+  ok(/actionbar/.test(src) && /ab-cta/.test(src), 'mobile action bar missing');
+  ok(/\.ab-call, \.ab-cta \{[^}]*min-height: 48px/.test(css), 'action bar targets under 48px');
+  ok(/env\(safe-area-inset-bottom/.test(css), 'action bar ignores the iPhone safe area');
+  ok(/\.ab-on \.site-footer \{[^}]*padding-bottom/.test(css), 'action bar will cover the footer');
+}
+
 ok(fs.existsSync('sitemap.xml'), 'sitemap.xml missing');
 ok(fs.existsSync('robots.txt'), 'robots.txt missing');
 if (fs.existsSync('sitemap.xml')) {

@@ -697,3 +697,33 @@ h4 { font-size: 1.05rem; letter-spacing: -0.02em; }
   .srv-d { font-size: 0.9rem; }
   .srv-t { font-size: 1.05rem; }
 }
+
+/* ==========================================================================
+   Mobile action bar. Thumb-zone CTA, safe-area aware, 48px targets.
+   Hidden entirely on desktop where the header CTA is always visible.
+   ========================================================================== */
+.actionbar {
+  position: fixed; inset: auto 0 0 0; z-index: 55; display: none;
+  gap: 0.6rem; padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+  background: rgb(255 255 255 / 0.94); backdrop-filter: blur(14px) saturate(180%);
+  border-top: 1px solid var(--line);
+  transform: translateY(110%); transition: transform 0.3s var(--out);
+}
+.ab-call, .ab-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+  min-height: 48px; border-radius: 999px; font-weight: 700; font-size: 0.95rem;
+}
+.ab-call { flex: 0 0 auto; padding-inline: 1.1rem; border: 1px solid var(--line-input); color: var(--fg); }
+.ab-call svg { width: 1.05rem; height: 1.05rem; }
+.ab-cta { flex: 1; background: var(--accent); color: var(--on-accent); }
+.ab-cta:active { background: var(--accent-ink); }
+
+@media (max-width: 900px) {
+  .actionbar { display: flex; }
+  /* revealed once past the hero, withdrawn over the contact form */
+  .ab-on .actionbar { transform: none; }
+  .ab-on.ab-off .actionbar { transform: translateY(110%); }
+  /* keep the footer clear of the bar */
+  .ab-on .site-footer { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) { .actionbar { transition: none; } }

@@ -1030,11 +1030,11 @@ function contactSection() {
           </div>
           <div class="field">
             <label for="cf-email">Email</label>
-            <input id="cf-email" name="email" type="email" required autocomplete="email">
+            <input id="cf-email" name="email" type="email" inputmode="email" autocapitalize="off" spellcheck="false" required autocomplete="email">
           </div>
           <div class="field">
             <label for="cf-phone">Phone <span class="muted">(optional)</span></label>
-            <input id="cf-phone" name="phone" type="tel" autocomplete="tel">
+            <input id="cf-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel">
           </div>
           <div class="field">
             <label for="cf-service">What do you need?</label>
@@ -1083,7 +1083,7 @@ function requestWorkForm() {
           </div>
           <div class="field">
             <label for="w-email">Work email</label>
-            <input id="w-email" name="email" type="email" required autocomplete="email">
+            <input id="w-email" name="email" type="email" inputmode="email" autocapitalize="off" spellcheck="false" required autocomplete="email">
           </div>
           <div class="field">
             <label for="w-sector">Your sector</label>
@@ -1269,11 +1269,11 @@ function caseDetail(c, slug) {
               </div>
               <div class="field">
                 <label for="g-email">Work email</label>
-                <input id="g-email" name="email" type="email" required autocomplete="email">
+                <input id="g-email" name="email" type="email" inputmode="email" autocapitalize="off" spellcheck="false" required autocomplete="email">
               </div>
               <div class="field">
                 <label for="g-phone">Phone</label>
-                <input id="g-phone" name="phone" type="tel" required autocomplete="tel">
+                <input id="g-phone" name="phone" type="tel" inputmode="tel" required autocomplete="tel">
               </div>
               <input type="hidden" name="caseStudy" value="${c.title}">
               <button class="btn btn-primary" type="submit">Email me this case study ${icon('arrowR')}</button>
@@ -1337,6 +1337,37 @@ function observeReveals() {
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -70px 0px' });
   els.forEach((e) => io.observe(e));
+}
+
+/* Mobile action bar. The primary CTA was reachable only by opening the
+   hamburger — on a 12-screen page that is a tap most visitors never make.
+   Pinned in the thumb zone, revealed once the hero scrolls away, and hidden
+   again over the contact form where it would be redundant. */
+function wireActionBar() {
+  if (!document.getElementById('contact')) return;      // detail pages: skip
+  const bar = document.createElement('div');
+  bar.className = 'actionbar';
+  bar.innerHTML = `
+    <a class="ab-call" href="tel:${CONFIG.phone.replace(/\s/g, '')}" aria-label="Call ${CONFIG.phone}">
+      ${icon('phone')}<span>Call</span>
+    </a>
+    <a class="ab-cta" href="#contact">${CONFIG.cta}</a>`;
+  document.body.appendChild(bar);
+
+  const show = (on) => document.body.classList.toggle('ab-on', on);
+
+  // reveal past the hero
+  const hero = document.getElementById('hero');
+  if (hero && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => show(!e.isIntersecting), { threshold: 0 }).observe(hero);
+  }
+  // ...but not while the contact form is on screen
+  const contact = document.getElementById('contact');
+  if (contact && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      document.body.classList.toggle('ab-off', e.isIntersecting);
+    }, { threshold: 0.15 }).observe(contact);
+  }
 }
 
 /* Collapse the named-problem lists on narrow screens. They are the single
@@ -1481,6 +1512,7 @@ document.addEventListener('DOMContentLoaded', () => {
   observeReveals();
   wireScroll();
   collapseOnMobile();
+  wireActionBar();
 });
 
 /* Node-only: lets build.cjs pre-render static pages. Inert in the browser. */
