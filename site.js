@@ -137,17 +137,6 @@ const DATA = {
     ],
   },
 
-  journey: {
-    title: 'From offline to in-reach.',
-    lead: 'Most of our clients already have a reputation somewhere. The work is extending it to everywhere the decision actually gets made.',
-    steps: [
-      { n: '01', title: 'Offline', text: 'Where the reputation already exists — a campus, a hospital, a storefront, a client list built on word of mouth.' },
-      { n: '02', title: 'Going Digital', text: 'Putting that reputation online — website, search, marketplaces and social, all saying the same thing.' },
-      { n: '03', title: 'Growth in Numbers', text: 'Tracking what performs, scaling reach, and moving spend to where it actually returns.' },
-      { n: '04', title: 'Compounding', text: 'Reach that keeps widening after the campaign ends, because the foundation holds.' },
-    ],
-  },
-
   /* Capability pillars — the self-select tablist, but on a CAPABILITY axis
      rather than revenue stage or sector. Works identically for a founder,
      a marketing team, or an institutional procurement committee. */
@@ -850,69 +839,35 @@ function renderHome() {
       </div>
     </div>`);
 
-  mount('journey', `
-    <div class="container">
-      <div class="section-head center reveal">
-        <h2>${DATA.journey.title}</h2>
-        <p class="lead">${DATA.journey.lead}</p>
-      </div>
-      <div class="journey">
-        ${DATA.journey.steps.map((s) => `
-          <div class="journey-step reveal">
-            <div class="dot">${s.n}</div>
-            <h3>${s.title}</h3>
-            <p>${s.text}</p>
-          </div>`).join('')}
-      </div>
-    </div>`);
-
   mount('pillars', `
     <div class="container">
-      <div class="section-head center reveal">
-        <span class="eyebrow">How we think</span>
+      <div class="section-head split reveal">
         <h2>Reach is built in three layers.</h2>
         <p class="lead">All three have to be true, in this order. Most of what goes wrong is a problem in one layer being treated as a problem in another — and paid for at the wrong one.</p>
       </div>
 
-      <div class="reveal">
-        <div class="pillar-tabs" role="tablist" aria-label="Capability">
-          ${DATA.pillars.map((s, i) => `
-            <button class="pillar-tab" role="tab" id="tab-${s.id}"
-                    aria-controls="panel-${s.id}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">
-              <span class="band">${s.kicker}</span>
-              <span class="lbl">${s.label}</span>
-            </button>`).join('')}
-        </div>
-
-        ${DATA.pillars.map((s, i) => `
-          <div class="pillar-panel" role="tabpanel" id="panel-${s.id}"
-               aria-labelledby="tab-${s.id}" ${i === 0 ? '' : 'hidden'}>
-            <div class="pillar-intro">
-              <h3>${s.headline}</h3>
-              <p class="muted">${s.body}</p>
-              <p class="pillar-focus">${s.services.join(' · ')}</p>
+      <div class="layers">
+        ${DATA.pillars.map((p, i) => `
+          <article class="layer reveal">
+            <div class="layer-top">
+              <span class="layer-n">0${i + 1}</span>
+              <span class="layer-kicker">${p.kicker}</span>
             </div>
-
-            <div class="split">
-              <div>
-                <h4 class="pillar-sub">What breaks without it</h4>
-                <dl class="solves">
-                  ${s.solves.map((p) => `<div><dt>${p.n}</dt><dd>${p.t}</dd></div>`).join('')}
-                </dl>
-              </div>
-              <div>
-                <h4 class="pillar-sub">What you get instead</h4>
-                ${ticks(s.outcomes)}
-                <a class="btn btn-primary" href="#contact" style="margin-top:1.5rem">${CONFIG.cta} ${icon('arrowR')}</a>
-              </div>
-            </div>
-          </div>`).join('')}
+            <h3>${p.label}</h3>
+            <p class="layer-lead">${p.headline}</p>
+            <p class="layer-body">${p.body}</p>
+            <div class="layer-svc">${p.services.map((x) => `<span>${x}</span>`).join('')}</div>
+            <h4 class="layer-sub">What breaks without it</h4>
+            <dl class="solves">
+              ${p.solves.map((x) => `<div><dt>${x.n}</dt><dd>${x.t}</dd></div>`).join('')}
+            </dl>
+          </article>`).join('')}
       </div>
     </div>`);
 
   mount('stack', `
     <div class="container">
-      <div class="section-head center reveal">
+      <div class="section-head reveal">
         <span class="eyebrow">Ecosystem</span>
         <h2>The platforms we actually operate in.</h2>
         <p class="lead">Not a badge wall. These are the consoles our team is in every week — across search, social, marketplace and quick-commerce.</p>
@@ -963,7 +918,7 @@ function renderHome() {
 
   mount('services', `
     <div class="container">
-      <div class="section-head center reveal">
+      <div class="section-head split reveal">
         <span class="eyebrow">What we do</span>
         <h2>Twelve ways we extend it.</h2>
         <p class="lead">Every service below exists to widen your reach or convert more of it. Nothing here is billed as an activity — each one answers to a number you already care about.</p>
@@ -973,7 +928,7 @@ function renderHome() {
 
   mount('process', `
     <div class="container">
-      <div class="section-head center reveal">
+      <div class="section-head aside reveal">
         <span class="eyebrow">How we work</span>
         <h2>Nothing here is a black box.</h2>
         <p class="lead">You will always know what we are doing, why, and what it is supposed to move. If you cannot explain our work to your board in one sentence, we have not done our job.</p>
@@ -990,12 +945,12 @@ function renderHome() {
 
   mount('why-us', `
     <div class="container">
-      <div class="section-head center reveal">
+      <div class="section-head reveal">
         <span class="eyebrow">Why us</span>
         <h2>Big-agency capability. Without the distance.</h2>
         <p class="lead">You get the specialists, the systems and the rigour — and a team that answers the phone, explains its reasoning, and tells you when something isn’t working.</p>
       </div>
-      <div class="grid grid-3" style="margin-bottom:3.5rem">
+      <div class="grid grid-3 offset-grid" style="margin-bottom:var(--sp-5)">
         ${DATA.whyUs.map((w) => `
           <article class="card reveal">
             <div class="card-icon">${icon(w.icon)}</div>
@@ -1013,13 +968,13 @@ function renderHome() {
 
   mount('portfolio', `
     <div class="container">
-      <div class="section-head center reveal">
+      <div class="section-head split reveal">
         <span class="eyebrow">Selected work</span>
         <h2>How far others got.</h2>
         <p class="lead">Recent engagements and what actually moved — the numbers, not the deliverables list.</p>
       </div>
       <div class="grid grid-3">${DATA.work.slice(0, 6).map(workCard).join('')}</div>
-      <div style="text-align:center;margin-top:3rem" class="reveal">
+      <div class="row-end reveal">
         <a class="btn btn-ghost" href="portfolio.html">View Full Portfolio ${icon('arrowR')}</a>
       </div>
     </div>`);
@@ -1154,37 +1109,6 @@ function wireForm(formSel = '#contact-form', statusSel = '#form-status', okMsg =
       btn.disabled = false;
       btn.style.opacity = '';
     }
-  });
-}
-
-/* --------------------------------------------------------------------------
-   Pillar tabs — WAI-ARIA tabs pattern: click, arrow keys, Home/End,
-   roving tabindex. Native <details> would be fewer lines but gives the wrong
-   semantics (these are exclusive views of one thing, not independent toggles).
-   -------------------------------------------------------------------------- */
-function wirePillars() {
-  const list = $('.pillar-tabs');
-  if (!list) return;
-  const tabs = $$('[role=tab]', list);
-
-  const select = (i, focus = true) => {
-    tabs.forEach((t, j) => {
-      const on = i === j;
-      t.setAttribute('aria-selected', String(on));
-      t.tabIndex = on ? 0 : -1;
-      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
-    });
-    if (focus) tabs[i].focus();
-  };
-
-  tabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => select(i, false));
-    tab.addEventListener('keydown', (e) => {
-      const k = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
-      if (k === undefined) return;
-      e.preventDefault();
-      select((k + tabs.length) % tabs.length);
-    });
   });
 }
 
@@ -1433,6 +1357,9 @@ function selftest() {
   const titles = Object.values(DATA.services).map((s) => s.title);
   Object.entries(DATA.services).forEach(([k, s]) =>
     ok(s.pillar === null || ids.includes(s.pillar), `service "${k}" pillar "${s.pillar}" is real`));
+  // Journey was cut as redundant with the pillars — make sure it stays gone.
+  ok(!('journey' in DATA), 'journey section removed (was redundant with pillars)');
+  ok(typeof wirePillars === 'undefined', 'tablist wiring removed');
   DATA.pillars.forEach((p) => p.services.forEach((name) =>
     ok(titles.includes(name), `pillar "${p.id}" lists real service "${name}"`)));
   ok(DATA.sectors.length >= 4, 'sectors listed');
@@ -1460,6 +1387,5 @@ document.addEventListener('DOMContentLoaded', () => {
   wireForm();
   wireForm('#gate-form', '#gate-status',
     'On its way — check your inbox in the next few minutes.');
-  wirePillars();
   observeReveals();
 });
