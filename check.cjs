@@ -94,6 +94,16 @@ const cases = [...(home.portfolio?.innerHTML || '')
   .matchAll(/href="work\/([a-z0-9-]+)\.html"/g)].map((m) => m[1]);
 ok(services.length === 12, `expected 12 service links on the homepage, found ${services.length}`);
 
+// No nav link may point at a section that renders empty — it would scroll nowhere.
+const navHtml = home.header?.innerHTML || '';
+for (const m of navHtml.matchAll(/href="index\.html(#[a-z-]+)"/g)) {
+  const id = m[1].slice(1);
+  ok((home[id]?.innerHTML || '').length > 50, `nav links to #${id} but that section renders empty`);
+}
+for (const m of navHtml.matchAll(/href="((?:portfolio|clients)\.html)"/g)) {
+  ok(fs.existsSync(m[1]), `nav links to ${m[1]} which does not exist`);
+}
+
 // The query-string router must still work — old shared links depend on it.
 for (const s of services.slice(0, 3)) {
   const n = boot(`?service=${s}`);

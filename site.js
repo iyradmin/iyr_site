@@ -116,13 +116,16 @@ const logo = (name) => {
    Replace with real numbers before launch.
    -------------------------------------------------------------------------- */
 const DATA = {
+  /* `when` gates a link on real content existing. A nav item pointing at an
+     empty section is a dead link — and we hide empty sections, so it would
+     scroll nowhere. Links switch themselves on as content lands. */
   nav: [
     { label: 'Capabilities', href: 'index.html#pillars' },
     { label: 'Services', href: 'index.html#services' },
     { label: 'Process', href: 'index.html#process' },
-    { label: 'Work', href: 'portfolio.html' },
-    { label: 'Clients', href: 'clients.html' },
-    { label: 'Testimonials', href: 'index.html#testimonials' },
+    { label: 'Work', href: 'portfolio.html', when: (d) => d.work.length },
+    { label: 'Clients', href: 'clients.html', when: (d) => d.clients.length },
+    { label: 'Testimonials', href: 'index.html#testimonials', when: (d) => d.testimonials.length },
   ],
 
   hero: {
@@ -645,6 +648,9 @@ const DATA = {
 /* --------------------------------------------------------------------------
    Render helpers
    -------------------------------------------------------------------------- */
+/** Nav links whose target actually has something to show. */
+const navLinks = () => DATA.nav.filter((n) => !n.when || n.when(DATA));
+
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
@@ -712,7 +718,7 @@ function renderChrome() {
         <span></span><span></span><span></span>
       </button>
       <nav class="nav-links">
-        ${DATA.nav.map((n) => `<a href="${n.href}">${n.label}</a>`).join('')}
+        ${navLinks().map((n) => `<a href="${n.href}">${n.label}</a>`).join('')}
         <a class="btn btn-primary" href="index.html#contact">${CONFIG.cta} ${icon("arrowR")}</a>
       </nav>
     </div>`);
@@ -737,7 +743,7 @@ function renderChrome() {
         </div>
         <div>
           <h4>Company</h4>
-          <ul>${DATA.nav.map((n) => `<li><a href="${n.href}">${n.label}</a></li>`).join('')}</ul>
+          <ul>${navLinks().map((n) => `<li><a href="${n.href}">${n.label}</a></li>`).join('')}</ul>
         </div>
         <div>
           <h4>Get in touch</h4>
@@ -1135,9 +1141,11 @@ function renderClientsPage() {
     ? `<div class="logo-wall reveal">${DATA.clients.map((c) => `<div>${c}</div>`).join('')}</div>` : '';
   const quotes = DATA.testimonials.length
     ? `<div class="grid grid-3" style="margin-top:var(--sp-5)">${DATA.testimonials.slice(0, 3).map(quoteCard).join('')}</div>` : '';
-  mount('clients-page', (wall || quotes)
-    ? `<div class="container">${wall}${quotes}</div>`
-    : `<div class="container">${requestWorkForm()}</div>`);
+  mount('clients-page', `
+    <div class="container">
+      ${wall}${quotes}
+      ${DATA.work.length ? '' : `<div style="margin-top:var(--sp-5)">${requestWorkForm()}</div>`}
+    </div>`);
 }
 
 /* --------------------------------------------------------------------------

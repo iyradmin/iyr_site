@@ -33,6 +33,7 @@ global.IntersectionObserver = class { observe() {} unobserve() {} };
 
 const S = require('./site.js');
 const { CONFIG, DATA, icon, serviceDetail, caseDetail } = S;
+const NAV = DATA.nav.filter((n) => !n.when || n.when(DATA));
 
 /* ---- site root. Change if you deploy to a subdirectory. ---------------- */
 const ORIGIN = process.env.SITE_ORIGIN || 'https://www.inyourreach.example';
@@ -69,7 +70,7 @@ function shell({ title, desc, body, depth, canonical, schema }) {
     <div class="container nav">
       <a class="brand" href="${up}index.html">In Your <span>Reach</span></a>
       <nav class="nav-links">
-        ${DATA.nav.map((n) => `<a href="${up}${n.href}">${esc(n.label)}</a>`).join('\n        ')}
+        ${NAV.map((n) => `<a href="${up}${n.href}">${esc(n.label)}</a>`).join('\n        ')}
         <a class="btn btn-primary" href="${up}index.html#contact">${esc(CONFIG.cta)}</a>
       </nav>
     </div>
@@ -93,7 +94,7 @@ ${body}
         </div>
         <div>
           <h4>Company</h4>
-          <ul>${DATA.nav.map((n) => `<li><a href="${up}${n.href}">${esc(n.label)}</a></li>`).join('')}</ul>
+          <ul>${NAV.map((n) => `<li><a href="${up}${n.href}">${esc(n.label)}</a></li>`).join('')}</ul>
         </div>
         <div>
           <h4>Get in touch</h4>
