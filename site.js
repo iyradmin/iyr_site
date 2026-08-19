@@ -633,7 +633,7 @@ const DATA = {
      guessing "Jog Hospital = healthcare" is how invented detail creeps back in.
      Add { name, sector } once confirmed and the strip can show sectors too. */
   clients: [
-    'Saadaa', 'Coffee Sutra', 'Lama', 'Jog Hospital', 'Shasn',
+    'Coffee Sutra', 'Lama', 'Jog Hospital', 'Shasn',
     'Huwant Lifestyle', 'Crewcore', 'Ridev', 'Baaz Bikes',
   ],
 
